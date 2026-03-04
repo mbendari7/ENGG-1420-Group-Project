@@ -1,4 +1,4 @@
-public enum BookingStatus {
+public enum BookingStatus { //booking status enum
     CONFIRMED,
     WAITLISTED,
     CANCELLED
