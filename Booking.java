@@ -1,10 +1,10 @@
-public class Booking {
+public class Booking { //booking class
     String bookingId;
     User user;
     Event event;
-    String status;
+    BookingStatus status;
 
-    public Booking(String bookingId, User user, Event event, String status) {
+    public Booking(String bookingId, User user, Event event, BookingStatus status) { //booking contsructor
         this.bookingId = bookingId;
         this.user = user;
         this.event = event;
