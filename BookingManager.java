@@ -4,8 +4,9 @@ import java.util.ArrayList;
 
 public class BookingManager {
 
-    ArrayList<Booking> allBookings = new ArrayList<Booking>();
-    int nextBookingId = 1;
+    ArrayList<Booking> allBookings = new ArrayList<Booking>(); // we use arraylist to store the bookings
+    int nextBookingId = 1; // one reason to use it is that it's size is dynamic, another reason is that it
+                           // sorts in FIFO order automatically
 
     public String createBooking(User user, Event event) { // create booking method
 
@@ -30,7 +31,7 @@ public class BookingManager {
         for (int i = 0; i < allBookings.size(); i++) { // loop through all bookings
             if (allBookings.get(i).event.eventId.equals(event.eventId)) {
                 if (allBookings.get(i).status == BookingStatus.CONFIRMED) { // if the booking is confirmed
-                    eventCount++;
+                    eventCount++; // add to the event count
                 }
             }
         }
@@ -39,19 +40,19 @@ public class BookingManager {
         String timestamp = java.time.LocalDateTime.now().toString(); // Auto-generates createdAt
 
         // check capacity and book
-        if (eventCount < event.capacity) { // if the event has capacity [cite: 58]
+        if (eventCount < event.capacity) { // if the event has capacity
             allBookings.add(new Booking(newId, user, event, timestamp, BookingStatus.CONFIRMED));
             return "SUCCESS: Confirmed " + newId;
         } else {
             allBookings.add(new Booking(newId, user, event, timestamp, BookingStatus.WAITLISTED)); // add the booking to
                                                                                                    // the waitlist
-
+                                                                                                   // [cite: 60]
             return "SUCCESS: Waitlisted " + newId;
         }
     }
 
     public String cancelBooking(String targetId) { // cancel booking method
-        Booking target = null; // find the booking
+        Booking target = null; // find the booking to cancel
 
         // find it
         for (int i = 0; i < allBookings.size(); i++) { // loop through all bookings
@@ -67,10 +68,9 @@ public class BookingManager {
             return "ERROR: Already cancelled";
         }
 
-        // remember if they had a real seat
-        boolean wasConfirmed = false; // remember if they had a real seat
+        boolean wasConfirmed = false; // check if they had a real seat
         if (target.status == BookingStatus.CONFIRMED) {
-            wasConfirmed = true; // if the booking is confirmed
+            wasConfirmed = true; // if the booking was confirmed
         }
 
         // cancel it
@@ -92,6 +92,6 @@ public class BookingManager {
             }
         }
 
-        return msg;
+        return msg; // returns the message to the user after the booking is cancelled
     }
 }
