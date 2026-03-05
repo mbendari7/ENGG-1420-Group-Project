@@ -1,19 +1,16 @@
-public class User { //user class
+// User.java (Abstract Base Class)
+public abstract class User {
     String userId;
     String name;
     String email;
 
-    public User(String userId, String name, String email) { //user constructor
+    public User(String userId, String name, String email) {
         this.userId = userId;
         this.name = name;
         this.email = email;
     }
 
-    public String getUserType() { //getter for user type
-        return "User";
-    }
+    public abstract String getUserType();
 
-    public int getMaxBookings() { //getter for max bookings
-        return 0;
-    }
+    public abstract int getMaxBookings();
 }

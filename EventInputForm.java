@@ -1,10 +1,12 @@
+
+// EventInputForm.java
 import javax.swing.*;
 import java.awt.*;
 
 public class EventInputForm {
-    public static void main(String[] args) {
+    public EventInputForm() { // Changed to constructor
         JFrame frame = new JFrame("Phase 1: Create Event");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // FIXED: prevents closing entire app
         frame.setSize(400, 300);
 
         JPanel panel = new JPanel(new GridLayout(6, 2, 10, 10));
@@ -19,7 +21,7 @@ public class EventInputForm {
         panel.add(new JTextField());
 
         panel.add(new JLabel("Type:"));
-        String[] eTypes = {"Workshop", "Seminar", "Concert"};
+        String[] eTypes = { "Workshop", "Seminar", "Concert" };
         panel.add(new JComboBox<>(eTypes));
 
         JButton btn = new JButton("Create Event");
@@ -27,6 +29,7 @@ public class EventInputForm {
         panel.add(btn);
 
         frame.add(panel);
+        frame.setLocationRelativeTo(null); // Centers window
         frame.setVisible(true);
     }
 }

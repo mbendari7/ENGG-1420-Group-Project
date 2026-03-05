@@ -1,3 +1,4 @@
+// Student.java
 public class Student extends User {
 
     // Constructor
@@ -11,7 +12,7 @@ public class Student extends User {
         return "Student";
     }
 
-    // Students can have max 3 confirmed bookings
+    // Students can have max 3 confirmed bookings [cite: 64]
     @Override
     public int getMaxBookings() {
         return 3;

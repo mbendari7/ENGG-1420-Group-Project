@@ -1,9 +1,10 @@
+// Seminar.java (Required by project [cite: 31])
 public class Seminar extends Event {
 
     String speakerName;
 
-    public Seminar(String eventId, String title, String location, int capacity, String speakerName) {
-        super(eventId, title, location, capacity);
+    public Seminar(String eventId, String title, String dateTime, String location, int capacity, String speakerName) {
+        super(eventId, title, dateTime, location, capacity);
         this.speakerName = speakerName;
     }
 

@@ -1,4 +1,5 @@
-public enum BookingStatus { //booking status enum
+// BookingStatus.java
+public enum BookingStatus { // booking status enum
     CONFIRMED,
     WAITLISTED,
     CANCELLED

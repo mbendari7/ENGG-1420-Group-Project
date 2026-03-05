@@ -1,3 +1,4 @@
+// Staff.java
 public class Staff extends User {
 
     // Constructor
@@ -11,7 +12,7 @@ public class Staff extends User {
         return "Staff";
     }
 
-    // Staff can have max 5 confirmed bookings
+    // Staff can have max 5 confirmed bookings [cite: 65]
     @Override
     public int getMaxBookings() {
         return 5;
