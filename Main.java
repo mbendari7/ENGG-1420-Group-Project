@@ -1,5 +1,3 @@
-
-// Main.java
 import javax.swing.*;
 import java.awt.*;
 
@@ -18,26 +16,24 @@ public class Main {
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         mainFrame.add(titleLabel);
 
-        // 1. User Management [cite: 95]
+        // 1. User Management
         JButton userMenuBtn = new JButton("1. User Management");
         userMenuBtn.addActionListener(e -> new UserInputForm());
         mainFrame.add(userMenuBtn);
 
-        // 2. Event Management [cite: 102]
+        // 2. Event Management
         JButton eventMenuBtn = new JButton("2. Event Management");
         eventMenuBtn.addActionListener(e -> new EventInputForm());
         mainFrame.add(eventMenuBtn);
 
-        // 3. Booking Management [cite: 114]
+        // 3. Booking Management
         JButton bookingMenuBtn = new JButton("3. Booking Management");
-        bookingMenuBtn
-                .addActionListener(e -> JOptionPane.showMessageDialog(mainFrame, "Booking UI placeholder for Phase 1"));
+        bookingMenuBtn.addActionListener(e -> new BookingForm()); // Links to your BookingForm!
         mainFrame.add(bookingMenuBtn);
 
-        // 4. Waitlist Management [cite: 122]
+        // 4. Waitlist Management
         JButton waitlistMenuBtn = new JButton("4. Waitlist Management");
-        waitlistMenuBtn.addActionListener(
-                e -> JOptionPane.showMessageDialog(mainFrame, "Waitlist UI placeholder for Phase 1"));
+        waitlistMenuBtn.addActionListener(e -> new WaitlistForm()); // Links to the new WaitlistForm!
         mainFrame.add(waitlistMenuBtn);
 
         mainFrame.setLocationRelativeTo(null); // Centers the window on your screen

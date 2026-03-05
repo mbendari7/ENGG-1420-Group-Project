@@ -3,7 +3,9 @@ public class Booking { // booking class
     String bookingId;
     User user;
     Event event;
+
     String createdAt; // Added to track waitlist order 
+
     BookingStatus status;
 
     public Booking(String bookingId, User user, Event event, String createdAt, BookingStatus status) { // booking constructor

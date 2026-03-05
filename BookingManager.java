@@ -4,8 +4,9 @@ import java.util.ArrayList;
 
 public class BookingManager {
 
-    ArrayList<Booking> allBookings = new ArrayList<Booking>(); //we use arraylist to store the bookings
-    int nextBookingId = 1; //one reason to use it is that it's size is dynamic, another reason is that it sorts in FIFO order automatically
+    ArrayList<Booking> allBookings = new ArrayList<Booking>(); // we use arraylist to store the bookings
+    int nextBookingId = 1; // one reason to use it is that it's size is dynamic, another reason is that it
+                           // sorts in FIFO order automatically
 
     public String createBooking(User user, Event event) { // create booking method
 
@@ -41,10 +42,12 @@ public class BookingManager {
         // check capacity and book
         if (eventCount < event.capacity) { // if the event has capacity
             allBookings.add(new Booking(newId, user, event, timestamp, BookingStatus.CONFIRMED));
-            return "SUCCESS: Confirmed " + newId; // return the success message
-        } else { // if the event does not have capacity
-            allBookings.add(new Booking(newId, user, event, timestamp, BookingStatus.WAITLISTED)); // add the booking to the waitlist
-            return "SUCCESS: Waitlisted " + newId; // return the success message
+            return "SUCCESS: Confirmed " + newId;
+        } else {
+            allBookings.add(new Booking(newId, user, event, timestamp, BookingStatus.WAITLISTED)); // add the booking to
+                                                                                                   // the waitlist
+                                                                                                   // [cite: 60]
+            return "SUCCESS: Waitlisted " + newId;
         }
     }
 

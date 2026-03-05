@@ -12,7 +12,7 @@ public class Staff extends User {
         return "Staff";
     }
 
-    // Staff can have max 5 confirmed bookings [cite: 65]
+    // Staff can have max 5 confirmed bookings
     @Override
     public int getMaxBookings() {
         return 5;

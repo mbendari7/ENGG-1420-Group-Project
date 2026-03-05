@@ -2,9 +2,9 @@ import javax.swing.*;
 import java.awt.*;
 
 public class BookingForm {
-    public static void main(String[] args) {
+    public BookingForm() { // Changed from main() to a constructor
         JFrame frame = new JFrame("Phase 1: Book Event");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // FIXED: Prevents app crash
         frame.setSize(350, 200);
 
         // A 4-row, 2-column grid layout
@@ -20,7 +20,7 @@ public class BookingForm {
 
         // 3. What is the status?
         panel.add(new JLabel("Status:"));
-        String[] statuses = {"Confirmed", "Waitlisted", "Cancelled"};
+        String[] statuses = { "Confirmed", "Waitlisted", "Cancelled" };
         panel.add(new JComboBox<>(statuses));
 
         // 4. The Action Button
@@ -29,6 +29,7 @@ public class BookingForm {
         panel.add(bookBtn);
 
         frame.add(panel);
+        frame.setLocationRelativeTo(null); // Centers the window on your screen
         frame.setVisible(true);
     }
 }
