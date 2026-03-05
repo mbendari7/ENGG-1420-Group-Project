@@ -1,5 +1,5 @@
 // Event.java
-public abstract class Event { // event class (made abstract for Phase 1 subclasses)
+public abstract class Event { // event class (made abstract for Phase 1 only)
     String eventId;
     String title;
     String dateTime; // added to meet project requirements
@@ -13,7 +13,7 @@ public abstract class Event { // event class (made abstract for Phase 1 subclass
         this.dateTime = dateTime;
         this.location = location;
         this.capacity = capacity;
-        this.status = EventStatus.ACTIVE; // Defaults to ACTIVE [cite: 28]
+        this.status = EventStatus.ACTIVE; // need it to default to ACTIVE [cite: 28]
     }
 
     public abstract String getEventType(); // getter for event type
