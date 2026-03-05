@@ -12,7 +12,7 @@ public class Guest extends User { // guest class
         return "Guest";
     }
 
-    // Guests can have max 1 confirmed booking [cite: 66]
+    // Guests can have max 1 confirmed booking
     @Override
     public int getMaxBookings() { // getter for max bookings
         return 1; // changed this value from 3 to 1 bcz guests can only have a max of 1 confirmed

@@ -12,7 +12,7 @@ public class Student extends User {
         return "Student";
     }
 
-    // Students can have max 3 confirmed bookings [cite: 64]
+    // Students can have max 3 confirmed bookings
     @Override
     public int getMaxBookings() {
         return 3;

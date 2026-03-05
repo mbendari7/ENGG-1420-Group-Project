@@ -13,7 +13,7 @@ public abstract class Event { // event class (made abstract for Phase 1 subclass
         this.dateTime = dateTime;
         this.location = location;
         this.capacity = capacity;
-        this.status = EventStatus.ACTIVE; // Defaults to ACTIVE [cite: 28]
+        this.status = EventStatus.ACTIVE; // Defaults to ACTIVE
     }
 
     public abstract String getEventType(); // getter for event type

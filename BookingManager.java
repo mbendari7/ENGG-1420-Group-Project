@@ -45,7 +45,7 @@ public class BookingManager {
         } else {
             allBookings.add(new Booking(newId, user, event, timestamp, BookingStatus.WAITLISTED)); // add the booking to
                                                                                                    // the waitlist
-                                                                                                   // [cite: 60]
+
             return "SUCCESS: Waitlisted " + newId;
         }
     }
@@ -84,7 +84,7 @@ public class BookingManager {
 
                 if (b.event.eventId.equals(target.event.eventId)) { // if the event id matches the target event id
                     if (b.status == BookingStatus.WAITLISTED) { // if the booking is waitlisted
-                        b.status = BookingStatus.CONFIRMED; // promote the booking to confirmed [cite: 62]
+                        b.status = BookingStatus.CONFIRMED; // promote the booking to confirmed
                         msg += " PROMOTED: " + b.bookingId; // add the booking id to the message
                         break; // stop after finding the first one (first come, first served)
                     }

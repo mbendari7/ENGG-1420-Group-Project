@@ -1,4 +1,4 @@
-// Seminar.java (Required by project [cite: 31])
+// Seminar.java 
 public class Seminar extends Event {
 
     String speakerName;
