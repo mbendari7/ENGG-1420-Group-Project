@@ -5,9 +5,34 @@ import java.util.ArrayList;
 public class BookingManager {
 
     ArrayList<Booking> allBookings = new ArrayList<Booking>(); // we use arraylist to store the bookings
+    ArrayList<Event> allEvents = new ArrayList<Event>(); // stores all events for search
     int nextBookingId = 1; // one reason to use it is that it's size is dynamic, another reason is that it
                            // sorts in FIFO order automatically
 
+
+                           // adds a new event to the event list
+                           public void addEvent(Event event) {
+                               allEvents.add(event);
+                           }
+
+    // searches events by title
+    // partial match + case-insensitive
+    public ArrayList<Event> searchEventsByTitle(String searchText) {
+        ArrayList<Event> results = new ArrayList<Event>(); // stores matching events
+
+        String searchLower = searchText.toLowerCase(); // makes search lowercase
+
+        for (int i = 0; i < allEvents.size(); i++) {
+            Event currentEvent = allEvents.get(i); // get event
+
+            // check if title contains search text
+            if (currentEvent.getTitle().toLowerCase().contains(searchLower)) {
+                results.add(currentEvent); // add match
+            }
+        }
+
+        return results; // return all matches
+    }
     public String createBooking(User user, Event event) { // create booking method
 
         // count user bookings
