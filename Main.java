@@ -23,7 +23,7 @@ public class Main {
 
         // 2. Event Management
         JButton eventMenuBtn = new JButton("2. Event Management");
-        eventMenuBtn.addActionListener(e -> new EventInputForm());
+        eventMenuBtn.addActionListener(e -> new EventInputForm(bookingManager));
         mainFrame.add(eventMenuBtn);
 
         // 3. Booking Management
