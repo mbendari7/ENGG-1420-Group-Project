@@ -42,7 +42,7 @@ public class EventInputForm {
 
         JFrame frame = new JFrame("Phase 2: Event Management");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setSize(700, 500);
+        frame.setSize(900, 650);
 
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
 
@@ -103,8 +103,8 @@ public class EventInputForm {
         JScrollPane scrollPane = new JScrollPane(resultsArea);
 
         mainPanel.add(createPanel, BorderLayout.NORTH);
-        mainPanel.add(searchPanel, BorderLayout.CENTER);
-        mainPanel.add(scrollPane, BorderLayout.SOUTH);
+        mainPanel.add(scrollPane, BorderLayout.CENTER);
+        mainPanel.add(searchPanel, BorderLayout.SOUTH);
 
         // create event button logic
         createButton.addActionListener(e -> {
