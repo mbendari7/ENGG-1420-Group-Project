@@ -18,4 +18,34 @@ public abstract class Event { // event class (made abstract for Phase 1 only)
 
 
         public abstract String getEventType(); // getter for event type
+
+        public String getEventId() {
+                return eventId;
+
+
+        }
+        // returns the event title
+        public String getTitle() {
+                return title;
+        }
+
+        // returns the date and time
+        public String getDateTime() {
+                return dateTime;
+        }
+
+        // returns the location
+        public String getLocation() {
+                return location;
+        }
+
+        // returns the capacity
+        public int getCapacity() {
+                return capacity;
+        }
+
+        // returns the event status
+        public EventStatus getStatus() {
+                return status;
+        }
 }
