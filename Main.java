@@ -21,7 +21,16 @@ public class Main {
 
        
         JFrame mainFrame = new JFrame("Campus Event Booking System - Phase 1");
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //intercept the close button to run DataSaver before exiting, basically an autosave feature
+        mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        mainFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                DataSaver saver = new DataSaver(); // save the system state before exiting
+                saver.saveSystemState(allUsers, bookingManager.allEvents, bookingManager.allBookings);
+                System.exit(0);
+            }
+        });
         mainFrame.setSize(400, 350);
         mainFrame.setLayout(new GridLayout(5, 1, 10, 10));
 
