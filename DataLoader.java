@@ -1,6 +1,8 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class DataLoader {
 
@@ -135,8 +137,38 @@ public class DataLoader {
             System.out.println("Error loading bookings from saved_bookings.csv.");
         }
 
+        restoreWaitlistOrder(bookings);
+
         return bookings;
     }
+
+    private void restoreWaitlistOrder(ArrayList<Booking> bookings) {
+    Collections.sort(bookings, new Comparator<Booking>() {
+        public int compare(Booking first, Booking second) {
+
+            if (!first.event.eventId.equals(second.event.eventId)) {
+                return 0;
+            }
+
+            boolean firstWaitlisted = first.status == BookingStatus.WAITLISTED;
+            boolean secondWaitlisted = second.status == BookingStatus.WAITLISTED;
+
+            if (firstWaitlisted && secondWaitlisted) {
+                return first.createdAt.compareTo(second.createdAt);
+            }
+
+            if (firstWaitlisted && !secondWaitlisted) {
+                return 1;
+            }
+
+            if (!firstWaitlisted && secondWaitlisted) {
+                return -1;
+            }
+
+            return 0;
+        }
+    });
+}
 
     private User findUserById(ArrayList<User> users, String userId) {
         for (int i = 0; i < users.size(); i++) {
@@ -176,3 +208,4 @@ public class DataLoader {
         return maxNumber + 1;
     }
 }
+
