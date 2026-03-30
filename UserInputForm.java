@@ -1,40 +1,84 @@
 
-// UserInputForm.java
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class UserInputForm {
-    public UserInputForm() { // Changed to constructor
-        JFrame frame = new JFrame("Phase 1: Add User");
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // FIXED: prevents closing entire app
-        frame.setSize(350, 250); // we can modify these later (width & height of window in pxls)
+    public UserInputForm() {
+        // Create the window for adding a user
+        JFrame frame = new JFrame("Add User");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); //FIXED: prevents closing entire app
+        frame.setSize(360, 240); //we can modify the size of the window later
 
-        // GridLayout just organizes the items in a 5x2 grid. the 10, 10 adds gaps
-        // between boxes (we can modify)
-        JPanel panel = new JPanel(new GridLayout(5, 2, 10, 10));
+        // Main panel with rows and columns
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(5, 2, 8, 8));
 
-        // Jlabel is text that user CANNOT change... JTextField is the empty white box
-        // where user types their info.
-        // repeat Jlabel & JTextField for ID, name, and email:
+        // Input fields
+        JTextField idField = new JTextField();
+        JTextField nameField = new JTextField();
+        JTextField emailField = new JTextField();
+
+        // Dropdown for user type
+        JComboBox<String> typeBox = new JComboBox<String>();
+        typeBox.addItem("Student");
+        typeBox.addItem("Staff");
+        typeBox.addItem("Guest");
+
+        // Add labels and fields to panel
         panel.add(new JLabel("User ID:"));
-        panel.add(new JTextField());
-
+        panel.add(idField);
         panel.add(new JLabel("Full Name:"));
-        panel.add(new JTextField());
-
+        panel.add(nameField);
         panel.add(new JLabel("Email:"));
-        panel.add(new JTextField());
-
+        panel.add(emailField);
         panel.add(new JLabel("Type:"));
-        String[] types = { "Student", "Staff", "Guest" }; // this just creates a list of the 3 user types.
-        panel.add(new JComboBox<>(types)); // JComboBox is simply just a dropdown menu,.. takes the list and lets user
-                                           // click from them.
+        panel.add(typeBox);
 
-        JButton btn = new JButton("Save User"); // clickable button at the bottom, for now it doesnt do anything tho
-        panel.add(new JLabel("")); // later we will make it actually save the data of the user
-        panel.add(btn);
+        // Save button
+        JButton saveButton = new JButton("Save");
+        panel.add(new JLabel(""));
+        panel.add(saveButton);
 
-        frame.add(panel); // this just glues the panel into the window frame
+        // What happens when save is clicked
+        saveButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String id = idField.getText();
+                String name = nameField.getText();
+                String email = emailField.getText();
+                String userType = typeBox.getSelectedItem().toString();
+
+                // Basic check for empty fields
+                if (id.trim().equals("") || name.trim().equals("") || email.trim().equals("")) {
+                    JOptionPane.showMessageDialog(frame, "Please fill all fields.");
+                    return;
+                }
+
+                // Create the correct user object based on selected type
+                User newUser;
+                if (userType.equals("Student")) {
+                    newUser = new Student(id, name, email);
+                } else if (userType.equals("Staff")) {
+                    newUser = new Staff(id, name, email);
+                } else {
+                    newUser = new Guest(id, name, email);
+                }
+
+                // Add user to global list
+                Main.allUsers.add(newUser);
+
+                // Save users, events, and bookings to file
+                DataSaver saver = new DataSaver();
+                saver.saveSystemState(Main.allUsers, Main.bookingManager.allEvents, Main.bookingManager.allBookings);
+
+                JOptionPane.showMessageDialog(frame, "User saved.");
+                frame.dispose();
+            }
+        });
+
+        // Final window setup
+        frame.add(panel); //this just glues the panel into the window frame
         frame.setLocationRelativeTo(null); // Centers window
         frame.setVisible(true); // ** WITHOUT this you won't see it on ur screen.
     }
