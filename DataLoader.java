@@ -47,7 +47,7 @@ public class DataLoader {
 
             reader.close();
         } catch (Exception e) {
-            System.out.println("Error loading users.");
+            System.out.println("Error loading users from saved_users.csv.");
         }
 
         return users;
@@ -92,7 +92,7 @@ public class DataLoader {
 
             reader.close();
         } catch (Exception e) {
-            System.out.println("Error loading events.");
+            System.out.println("Error loading events from saved_events.csv.");
         }
 
         return events;
@@ -132,7 +132,7 @@ public class DataLoader {
 
             reader.close();
         } catch (Exception e) {
-            System.out.println("Error loading bookings.");
+            System.out.println("Error loading bookings from saved_bookings.csv.");
         }
 
         return bookings;
