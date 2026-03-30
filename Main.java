@@ -12,11 +12,14 @@ public class Main {
         DataLoader loader = new DataLoader();
         SystemState loadedState = loader.loadSystemState();
 
+    if (loadedState != null) {
         allUsers = loadedState.allUsers;
         bookingManager.allEvents = loadedState.allEvents;
         bookingManager.allBookings = loadedState.allBookings;
         bookingManager.nextBookingId = loadedState.nextBookingId;
+}
 
+       
         JFrame mainFrame = new JFrame("Campus Event Booking System - Phase 1");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setSize(400, 350);
