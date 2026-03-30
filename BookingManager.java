@@ -33,6 +33,28 @@ public class BookingManager {
 
         return results; // return all matches
     }
+
+    // khalid wrote the following for phase 2: filter events by type (Workshop/Seminar/Concert):
+    public ArrayList<Event> filterEventsByType(String eventType) {
+        ArrayList<Event> results = new ArrayList<Event>();
+
+        // If they select "All", just give them the whole list
+        if (eventType.equals("All")) {
+            return allEvents;
+        }
+
+        // Otherwise, loop through and find the matching types
+        for (int i = 0; i < allEvents.size(); i++) {
+            Event currentEvent = allEvents.get(i);
+
+            // Checks if the event class name (Workshop, Concert, etc.) matches the dropdown choice
+            if (currentEvent.getClass().getSimpleName().equalsIgnoreCase(eventType)) {
+                results.add(currentEvent);
+            }
+        }
+        return results;
+    }
+
     public String createBooking(User user, Event event) { // create booking method
 
         // count user bookings
