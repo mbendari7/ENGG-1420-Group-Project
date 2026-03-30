@@ -88,14 +88,23 @@ public class EventInputForm {
         createPanel.add(new JLabel(""));
         createPanel.add(createButton);
 
-        // middle panel for search
-        JPanel searchPanel = new JPanel(new BorderLayout(10, 10));
+        // middle panel for search & filter (Ahmed & Khalid)
+        JPanel searchPanel = new JPanel(new GridLayout(2, 3, 10, 10));
+
+        // row 1: search by title (ahmed's code)
         JTextField searchField = new JTextField();
         JButton searchButton = new JButton("Search by Title");
+        searchPanel.add(new JLabel("Search Title:"));
+        searchPanel.add(searchField);
+        searchPanel.add(searchButton);
 
-        searchPanel.add(new JLabel("Search Title:"), BorderLayout.WEST);
-        searchPanel.add(searchField, BorderLayout.CENTER);
-        searchPanel.add(searchButton, BorderLayout.EAST);
+        // row 2: filter by event type (khalid's code)
+        String[] filterTypes = {"All", "Workshop", "Seminar", "Concert"};
+        JComboBox<String> filterBox = new JComboBox<>(filterTypes);
+        JButton filterButton = new JButton("Filter by Type");
+        searchPanel.add(new JLabel("Filter Type:"));
+        searchPanel.add(filterBox);
+        searchPanel.add(filterButton);
 
         // text area to show results
         JTextArea resultsArea = new JTextArea();
@@ -160,6 +169,26 @@ public class EventInputForm {
                 resultsArea.setText("No matching events found.");
             } else {
                 String output = "Search Results:\n\n";
+
+                for (int i = 0; i < results.size(); i++) {
+                    output += formatEvent(results.get(i)) + "\n\n";
+                }
+
+                resultsArea.setText(output);
+            }
+        });
+
+        //  filter button logic
+        filterButton.addActionListener(e -> {
+            String selectedType = (String) filterBox.getSelectedItem();
+
+            // fetch filtered events from the BookingManager
+            ArrayList<Event> results = bookingManager.filterEventsByType(selectedType);
+
+            if (results.size() == 0) {
+                resultsArea.setText("No " + selectedType + " events found.");
+            } else {
+                String output = "Filter Results (" + selectedType + "):\n\n";
 
                 for (int i = 0; i < results.size(); i++) {
                     output += formatEvent(results.get(i)) + "\n\n";
