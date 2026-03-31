@@ -1,40 +1,52 @@
+import java.util.ArrayList;
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 
 public class Main {
-
     public static ArrayList<User> users = new ArrayList<>();
     public static ArrayList<Event> events = new ArrayList<>();
-    public static BookingManager bookingManager = new BookingManager();
+    public static ArrayList<Booking> bookings = new ArrayList<>();
+    public static BookingManager bookingManager;
 
     public static void main(String[] args) {
-        JFrame mainFrame = new JFrame("Campus Event Booking System - Phase 1");
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.setSize(400, 350);
-        mainFrame.setLayout(new GridLayout(5, 1, 10, 10));
+        DataLoader loader = new DataLoader();
+        SystemState state = loader.loadSystemState();
 
-        JLabel titleLabel = new JLabel("Main Navigation Menu", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        mainFrame.add(titleLabel);
+        users = state.users;
+        events = state.events;
+        bookings = state.bookings;
 
-        JButton userMenuBtn = new JButton("1. User Management");
-        userMenuBtn.addActionListener(e -> new UserInputForm());
-        mainFrame.add(userMenuBtn);
+        bookingManager = new BookingManager(users, events, bookings, state.nextBookingId);
 
-        JButton eventMenuBtn = new JButton("2. Event Management");
-        eventMenuBtn.addActionListener(e -> new EventInputForm());
-        mainFrame.add(eventMenuBtn);
+        showMainMenu();
+    }
 
-        JButton bookingMenuBtn = new JButton("3. Booking Management");
-        bookingMenuBtn.addActionListener(e -> new BookingForm());
-        mainFrame.add(bookingMenuBtn);
+    public static void showMainMenu() {
+        JFrame frame = new JFrame("Campus Event System - Phase 2");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 500);
+        frame.setLayout(new GridLayout(7, 1, 10, 10));
 
-        JButton waitlistMenuBtn = new JButton("4. Waitlist Management");
-        waitlistMenuBtn.addActionListener(e -> new WaitlistForm());
-        mainFrame.add(waitlistMenuBtn);
+        JButton userBtn = new JButton("User Management");
+        JButton eventBtn = new JButton("Event Management");
+        JButton bookingBtn = new JButton("Booking Operations");
+        JButton saveBtn = new JButton("SAVE SYSTEM STATE");
 
-        mainFrame.setLocationRelativeTo(null);
-        mainFrame.setVisible(true);
+        userBtn.addActionListener(e -> new UserInputForm());
+        eventBtn.addActionListener(e -> new EventInputForm(bookingManager));
+        bookingBtn.addActionListener(e -> new BookingForm());
+
+        saveBtn.addActionListener(e -> {
+            new DataSaver().saveSystemState(users, events, bookings);
+            JOptionPane.showMessageDialog(frame, "System state saved to CSV!");
+        });
+
+        frame.add(new JLabel("Main Menu", SwingConstants.CENTER));
+        frame.add(userBtn);
+        frame.add(eventBtn);
+        frame.add(bookingBtn);
+        frame.add(saveBtn);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
     }
 }

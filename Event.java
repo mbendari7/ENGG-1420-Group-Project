@@ -7,15 +7,45 @@ public abstract class Event { // event class (made abstract for Phase 1 only)
         int capacity;
         EventStatus status; // Using your new EventStatus enum
 
-        public Event(String eventId, String title, String dateTime, String location, int capacity) { // event
-                                                                                                     // constructor
-                this.eventId = eventId;
-                this.title = title;
-                this.dateTime = dateTime;
-                this.location = location;
-                this.capacity = capacity;
-                this.status = EventStatus.ACTIVE; // Defaults to ACTIVE [cite: 28]
-        }
+    public Event(String eventId, String title, String dateTime, String location, int capacity) { // event constructor
+        this.eventId = eventId;
+        this.title = title;
+        this.dateTime = dateTime;
+        this.location = location;
+        this.capacity = capacity;
+        this.status = EventStatus.ACTIVE; // need it to default to ACTIVE
+    }
+
 
         public abstract String getEventType(); // getter for event type
+
+        public String getEventId() {
+                return eventId;
+
+
+        }
+        // returns the event title
+        public String getTitle() {
+                return title;
+        }
+
+        // returns the date and time
+        public String getDateTime() {
+                return dateTime;
+        }
+
+        // returns the location
+        public String getLocation() {
+                return location;
+        }
+
+        // returns the capacity
+        public int getCapacity() {
+                return capacity;
+        }
+
+        // returns the event status
+        public EventStatus getStatus() {
+                return status;
+        }
 }

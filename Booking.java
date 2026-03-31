@@ -3,11 +3,13 @@ public class Booking { // booking class
     String bookingId;
     User user;
     Event event;
-    String createdAt; // Added to track waitlist order
+
+    String createdAt; // Added to track waitlist order 
+
     BookingStatus status;
 
-    public Booking(String bookingId, User user, Event event, String createdAt, BookingStatus status) { // booking
-                                                                                                       // contsructor
+    public Booking(String bookingId, User user, Event event, String createdAt, BookingStatus status) { // booking constructor
+        
         this.bookingId = bookingId;
         this.user = user;
         this.event = event;

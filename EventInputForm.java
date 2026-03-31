@@ -1,89 +1,83 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class EventInputForm {
-    public EventInputForm() {
-        JFrame frame = new JFrame("Phase 1: Create Event");
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setSize(450, 400); // Made slightly taller to fit the new fields
+    BookingManager manager;
 
-        JPanel panel = new JPanel(new GridLayout(8, 2, 10, 10)); // Updated to 8 rows
+    public EventInputForm(BookingManager manager) {
+        this.manager = manager;
+        JFrame frame = new JFrame("Event Management");
+        frame.setSize(500, 600);
+        frame.setLayout(new BorderLayout());
 
-        // 1. Create variables for all the text boxes so we can read them
-        JTextField idField = new JTextField();
-        JTextField titleField = new JTextField();
-        JTextField dateTimeField = new JTextField();
-        JTextField locationField = new JTextField();
-        JTextField capacityField = new JTextField();
-        JTextField specificField = new JTextField(); // Used for Topic / Speaker / Age Restriction
+        JPanel createP = new JPanel(new GridLayout(6, 2, 5, 5));
+        JTextField idF = new JTextField();
+        JTextField titleF = new JTextField();
+        JTextField capF = new JTextField();
+        JTextField specF = new JTextField();
+        JTextField dateF = new JTextField("2026-03-30T19:00");
+        JComboBox<String> typeB = new JComboBox<>(new String[] { "Workshop", "Seminar", "Concert" });
+        JButton addB = new JButton("Create Event");
 
-        String[] eTypes = { "Workshop", "Seminar", "Concert" };
-        JComboBox<String> typeBox = new JComboBox<>(eTypes);
+        createP.add(new JLabel("ID:"));
+        createP.add(idF);
+        createP.add(new JLabel("Title:"));
+        createP.add(titleF);
+        createP.add(new JLabel("Date/Time:"));
+        createP.add(dateF);
+        createP.add(new JLabel("Capacity:"));
+        createP.add(capF);
+        createP.add(new JLabel("Type:"));
+        createP.add(typeB);
+        createP.add(new JLabel("Spec Info:"));
+        createP.add(specF);
 
-        // 2. Add them to the panel
-        panel.add(new JLabel("Event ID:"));
-        panel.add(idField);
+        JPanel buttonP = new JPanel();
+        buttonP.add(addB);
 
-        panel.add(new JLabel("Title:"));
-        panel.add(titleField);
+        JPanel searchP = new JPanel();
+        JTextField sF = new JTextField(10);
+        JButton sB = new JButton("Search Title");
+        searchP.add(new JLabel("Search:"));
+        searchP.add(sF);
+        searchP.add(sB);
 
-        panel.add(new JLabel("Date/Time (e.g. 2026-03-10):"));
-        panel.add(dateTimeField);
+        JTextArea area = new JTextArea(10, 30);
 
-        panel.add(new JLabel("Location:"));
-        panel.add(locationField);
-
-        panel.add(new JLabel("Capacity (Number):"));
-        panel.add(capacityField);
-
-        panel.add(new JLabel("Type:"));
-        panel.add(typeBox);
-
-        panel.add(new JLabel("Specific Info (Topic/Speaker/Age):"));
-        panel.add(specificField);
-
-        JButton btn = new JButton("Create Event");
-
-        // --- 3. THE BACKEND LOGIC TO SAVE THE EVENT ---
-        btn.addActionListener(e -> {
+        addB.addActionListener(e -> {
             try {
-                // Read what the user typed
-                String id = idField.getText();
-                String title = titleField.getText();
-                String dateTime = dateTimeField.getText();
-                String location = locationField.getText();
-                int capacity = Integer.parseInt(capacityField.getText()); // Converts text to a number
-                String type = (String) typeBox.getSelectedItem();
-                String specificInfo = specificField.getText();
-
-                // Create the correct Event object based on the dropdown
-                Event newEvent = null;
-                if (type.equals("Workshop")) {
-                    newEvent = new Workshop(id, title, dateTime, location, capacity, specificInfo);
-                } else if (type.equals("Seminar")) {
-                    newEvent = new Seminar(id, title, dateTime, location, capacity, specificInfo);
-                } else if (type.equals("Concert")) {
-                    newEvent = new Concert(id, title, dateTime, location, capacity, specificInfo);
-                }
-
-                // Save it to Main's memory list
-                Main.events.add(newEvent);
-
-                // Show success popup and close window
-                JOptionPane.showMessageDialog(frame, type + " created successfully!");
-                frame.dispose();
-
-            } catch (NumberFormatException ex) {
-                // Prevents a crash if they type a word instead of a number for capacity
-                JOptionPane.showMessageDialog(frame, "Error: Capacity must be a valid number!");
+                Event ev;
+                String t = (String) typeB.getSelectedItem();
+                int cap = Integer.parseInt(capF.getText());
+                if (t.equals("Workshop"))
+                    ev = new Workshop(idF.getText(), titleF.getText(), dateF.getText(), "Campus", cap, specF.getText());
+                else if (t.equals("Seminar"))
+                    ev = new Seminar(idF.getText(), titleF.getText(), dateF.getText(), "Campus", cap, specF.getText());
+                else
+                    ev = new Concert(idF.getText(), titleF.getText(), dateF.getText(), "Campus", cap, specF.getText());
+                manager.addEvent(ev);
+                JOptionPane.showMessageDialog(frame, "Event Created!");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(frame, "Error: Check capacity format.");
             }
         });
 
-        panel.add(new JLabel("")); // Spacer
-        panel.add(btn);
+        sB.addActionListener(e -> {
+            ArrayList<Event> res = manager.searchEventsByTitle(sF.getText());
+            area.setText("Results:\n");
+            for (Event ev : res)
+                area.append(ev.getEventId() + ": " + ev.getTitle() + " (" + ev.getEventType() + ")\n");
+        });
 
-        frame.add(panel);
-        frame.setLocationRelativeTo(null);
+        frame.add(createP, BorderLayout.NORTH);
+        frame.add(buttonP, BorderLayout.CENTER);
+
+        JPanel bottomP = new JPanel(new BorderLayout());
+        bottomP.add(searchP, BorderLayout.NORTH);
+        bottomP.add(new JScrollPane(area), BorderLayout.CENTER);
+        frame.add(bottomP, BorderLayout.SOUTH);
+
         frame.setVisible(true);
     }
 }
