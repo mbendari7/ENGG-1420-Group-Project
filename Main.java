@@ -12,41 +12,49 @@ public class Main {
         DataLoader loader = new DataLoader();
         SystemState state = loader.loadSystemState();
 
-        users = state.users;
-        events = state.events;
-        bookings = state.bookings;
+        if (loadedState != null) {
+            allUsers = loadedState.allUsers;
+            bookingManager.allEvents = loadedState.allEvents;
+            bookingManager.allBookings = loadedState.allBookings;
+            bookingManager.nextBookingId = loadedState.nextBookingId;
+        }
 
-        bookingManager = new BookingManager(users, events, bookings, state.nextBookingId);
-
-        showMainMenu();
-    }
-
-    public static void showMainMenu() {
-        JFrame frame = new JFrame("Campus Event System - Phase 2");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 500);
-        frame.setLayout(new GridLayout(7, 1, 10, 10));
-
-        JButton userBtn = new JButton("User Management");
-        JButton eventBtn = new JButton("Event Management");
-        JButton bookingBtn = new JButton("Booking Operations");
-        JButton saveBtn = new JButton("SAVE SYSTEM STATE");
-
-        userBtn.addActionListener(e -> new UserInputForm());
-        eventBtn.addActionListener(e -> new EventInputForm(bookingManager));
-        bookingBtn.addActionListener(e -> new BookingForm());
-
-        saveBtn.addActionListener(e -> {
-            new DataSaver().saveSystemState(users, events, bookings);
-            JOptionPane.showMessageDialog(frame, "System state saved to CSV!");
+        JFrame mainFrame = new JFrame("Campus Event Booking System - Phase 1");
+        // intercept the close button to run DataSaver before exiting, basically an
+        // autosave feature
+        mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        mainFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                DataSaver saver = new DataSaver(); // save the system state before exiting
+                saver.saveSystemState(allUsers, bookingManager.allEvents, bookingManager.allBookings);
+                System.exit(0);
+            }
         });
+        mainFrame.setSize(400, 350);
+        mainFrame.setLayout(new GridLayout(5, 1, 10, 10));
 
-        frame.add(new JLabel("Main Menu", SwingConstants.CENTER));
-        frame.add(userBtn);
-        frame.add(eventBtn);
-        frame.add(bookingBtn);
-        frame.add(saveBtn);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        JLabel titleLabel = new JLabel("Main Navigation Menu", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        mainFrame.add(titleLabel);
+
+        JButton userMenuBtn = new JButton("1. User Management");
+        userMenuBtn.addActionListener(e -> new UserInputForm());
+        mainFrame.add(userMenuBtn);
+
+        JButton eventMenuBtn = new JButton("2. Event Management");
+        eventMenuBtn.addActionListener(e -> new EventInputForm(bookingManager));
+        mainFrame.add(eventMenuBtn);
+
+        JButton bookingMenuBtn = new JButton("3. Booking Management");
+        bookingMenuBtn.addActionListener(e -> new BookingForm()); // Links to your BookingForm!
+        mainFrame.add(bookingMenuBtn);
+
+        JButton waitlistMenuBtn = new JButton("4. Waitlist Management");
+        waitlistMenuBtn.addActionListener(e -> new WaitlistForm()); // Links to the new WaitlistForm!
+        mainFrame.add(waitlistMenuBtn);
+
+        mainFrame.setLocationRelativeTo(null); // Centers the window on your screen
+        mainFrame.setVisible(true);
     }
 }

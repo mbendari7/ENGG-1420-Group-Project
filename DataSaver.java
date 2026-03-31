@@ -12,7 +12,7 @@ public class DataSaver {
 
     public void saveUsers(ArrayList<User> users) {
         try {
-            FileWriter usersWriter = new FileWriter("saved_users.csv");
+            FileWriter usersWriter = new FileWriter("users.csv");
             usersWriter.write("userId,name,email,userType\n");
 
             for (int i = 0; i < users.size(); i++) {
@@ -34,7 +34,7 @@ public class DataSaver {
 
     public void saveEvents(ArrayList<Event> events) {
         try {
-            FileWriter eventsWriter = new FileWriter("saved_events.csv");
+            FileWriter eventsWriter = new FileWriter("events.csv");
             eventsWriter.write("eventId,title,dateTime,location,capacity,status,eventType,topic,speakerName,ageRestriction\n"); // this writes the csv header for the events file
 
             for (int i = 0; i < events.size(); i++) {
@@ -71,17 +71,17 @@ public class DataSaver {
 
     public void saveBookings(ArrayList<Booking> bookings) {
         try {
-            FileWriter bookingsWriter = new FileWriter("saved_bookings.csv");
+            FileWriter bookingsWriter = new FileWriter("bookings.csv");
             bookingsWriter.write("bookingId,userId,eventId,createdAt,bookingStatus\n");
 
             for (int i = 0; i < bookings.size(); i++) {
                 Booking currentBooking = bookings.get(i);
 
-                String bookingIdText = currentBooking.bookingId + "";
-                String userIdText = currentBooking.user.userId + "";
-                String eventIdText = currentBooking.event.eventId + "";
-                String createdAtText = currentBooking.createdAt + "";
-                String statusText = currentBooking.status + "";
+                String bookingIdText = currentBooking.bookingId + "";//this is the booking id of the booking
+                String userIdText = currentBooking.user.userId + "";//this is the user id of the booking
+                String eventIdText = currentBooking.event.eventId + "";//this is the event id of the booking
+                String createdAtText = currentBooking.createdAt + "";//this is the time the booking was created
+                String statusText = currentBooking.status + "";//this is the status of the booking
 
                 String bookingLine = bookingIdText + "," + userIdText + "," + eventIdText + "," + createdAtText + "," + statusText;
                 bookingsWriter.write(bookingLine + "\n");
@@ -91,7 +91,4 @@ public class DataSaver {
             System.out.println("Error saving bookings."); // this handles the exception, we did this bcz the program will crash if we dont have a catch
         }
     }
-
-
 }
-

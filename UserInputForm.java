@@ -28,14 +28,50 @@ public class UserInputForm {
         panel.add(new JTextField());
 
         panel.add(new JLabel("Type:"));
-        String[] types = { "Student", "Staff", "Guest" }; // this just creates a list of the 3 user types.
-        panel.add(new JComboBox<>(types)); // JComboBox is simply just a dropdown menu,.. takes the list and lets user
-                                           // click from them.
+        panel.add(typeBox);
 
-        JButton btn = new JButton("Save User"); // clickable button at the bottom, for now it doesnt do anything tho
-        panel.add(new JLabel("")); // later we will make it actually save the data of the user
-        panel.add(btn);
+        // Save button
+        JButton saveButton = new JButton("Save");
+        panel.add(new JLabel(""));
+        panel.add(saveButton);
 
+        // What happens when save is clicked
+        saveButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String id = idField.getText();
+                String name = nameField.getText();
+                String email = emailField.getText();
+                String userType = typeBox.getSelectedItem().toString();
+
+                // Basic check for empty fields
+                if (id.trim().equals("") || name.trim().equals("") || email.trim().equals("")) {
+                    JOptionPane.showMessageDialog(frame, "Please fill all fields.");
+                    return;
+                }
+
+                // Create the correct user object based on selected type
+                User newUser;
+                if (userType.equals("Student")) {
+                    newUser = new Student(id, name, email);
+                } else if (userType.equals("Staff")) {
+                    newUser = new Staff(id, name, email);
+                } else {
+                    newUser = new Guest(id, name, email);
+                }
+
+                // Add user to global list
+                Main.allUsers.add(newUser);
+
+                // Save users, events, and bookings to file
+                DataSaver saver = new DataSaver();
+                saver.saveSystemState(Main.allUsers, Main.bookingManager.allEvents, Main.bookingManager.allBookings);
+
+                JOptionPane.showMessageDialog(frame, "User saved.");
+                frame.dispose();
+            }
+        });
+
+        // Final window setup
         frame.add(panel); // this just glues the panel into the window frame
         frame.setLocationRelativeTo(null); // Centers window
         frame.setVisible(true); // ** WITHOUT this you won't see it on ur screen.

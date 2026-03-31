@@ -47,17 +47,42 @@ public class EventInputForm {
 
         addB.addActionListener(e -> {
             try {
-                Event ev;
-                String t = (String) typeB.getSelectedItem();
-                int cap = Integer.parseInt(capF.getText());
-                if (t.equals("Workshop"))
-                    ev = new Workshop(idF.getText(), titleF.getText(), dateF.getText(), "Campus", cap, specF.getText());
-                else if (t.equals("Seminar"))
-                    ev = new Seminar(idF.getText(), titleF.getText(), dateF.getText(), "Campus", cap, specF.getText());
-                else
-                    ev = new Concert(idF.getText(), titleF.getText(), dateF.getText(), "Campus", cap, specF.getText());
-                manager.addEvent(ev);
-                JOptionPane.showMessageDialog(frame, "Event Created!");
+                // get values from fields
+                String eventId = eventIdField.getText().trim();
+                String title = titleField.getText().trim();
+                String dateTime = dateTimeField.getText().trim();
+                String location = locationField.getText().trim();
+                int capacity = Integer.parseInt(capacityField.getText().trim());
+                String selectedType = (String) typeBox.getSelectedItem();
+                String extraValue = extraField.getText().trim();
+
+                Event newEvent = null; // will hold the event object
+
+                // create the correct event subclass
+                if (selectedType.equals("Workshop")) {
+                    newEvent = new Workshop(eventId, title, dateTime, location, capacity, extraValue);
+                } else if (selectedType.equals("Seminar")) {
+                    newEvent = new Seminar(eventId, title, dateTime, location, capacity, extraValue);
+                } else if (selectedType.equals("Concert")) {
+                    newEvent = new Concert(eventId, title, dateTime, location, capacity, extraValue);
+                }
+
+                // store the event in BookingManager
+                bookingManager.addEvent(newEvent);
+
+                // show success message
+                resultsArea.setText("Event created successfully:\n\n" + formatEvent(newEvent));
+
+                // clear fields after creating
+                eventIdField.setText("");
+                titleField.setText("");
+                dateTimeField.setText("");
+                locationField.setText("");
+                capacityField.setText("");
+                extraField.setText("");
+
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(frame, "Capacity must be a number.");
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(frame, "Error: Check capacity format.");
             }
