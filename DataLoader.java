@@ -4,19 +4,31 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+// DataLoader rebuilds the in-memory system from CSV files at startup.
+// Why this class is needed:
+// - It restores users, events, and bookings so data is not lost between runs.
+// - It reconstructs object references (booking -> user/event objects) from IDs.
+// - It restores waitlist ordering so promotions remain first-come, first-served.
 public class DataLoader {
 
+    // Loads the full application state in dependency order:
+    // 1) users, 2) events, 3) bookings (bookings depend on users/events),
+    // then computes the next booking ID.
     public SystemState loadSystemState() {
         ArrayList<User> loadedUsers = loadUsers();
         ArrayList<Event> loadedEvents = loadEvents();
         ArrayList<Booking> loadedBookings = loadBookings(loadedUsers, loadedEvents);
 
+        // every booking has a unique ID, so there is no 
+        // conflict in operations (booking, deleting, waitlisting, promoting)
         int nextBookingId = findNextBookingId(loadedBookings);
 
         System.out.println("System loaded.");
         return new SystemState(loadedUsers, loadedEvents, loadedBookings, nextBookingId);
     }
 
+    // Reads users.csv and creates concrete user objects (Student/Staff/Guest).
+    // Needed so booking rules (polymorphic max bookings) still work after restart.
     public ArrayList<User> loadUsers() {
         ArrayList<User> users = new ArrayList<User>();
 
@@ -25,12 +37,14 @@ public class DataLoader {
             String line = reader.readLine(); // header
 
             while ((line = reader.readLine()) != null) {
+                // skip empty lines
                 if (line.trim().equals("")) {
                     continue;
                 }
 
                 try {
                     String[] parts = line.split(",", -1);
+                    // skip invalid data (missing either userId, name, email, or userType)
                     if (parts.length < 4) {
                         continue;
                     }
@@ -42,6 +56,7 @@ public class DataLoader {
 
                     User user = null;
 
+                    // create the correct user object based on the userType
                     if (userType.equals("Student")) {
                         user = new Student(userId, name, email);
                     } else if (userType.equals("Staff")) {
@@ -66,6 +81,9 @@ public class DataLoader {
         return users;
     }
 
+    // Reads events.csv and rebuilds the correct event subtype
+    // (Workshop/Seminar/Concert) using the saved eventType column.
+    // Needed so type-specific event data is preserved across runs.
     public ArrayList<Event> loadEvents() {
         ArrayList<Event> events = new ArrayList<Event>();
 
@@ -126,6 +144,9 @@ public class DataLoader {
         return events;
     }
 
+    // Reads bookings.csv and reconnects each booking to its User and Event objects.
+    // Needed so booking operations (capacity checks, cancellation, promotion)
+    // continue to work using live object references instead of raw IDs.
     public ArrayList<Booking> loadBookings(ArrayList<User> users, ArrayList<Event> events) {
         ArrayList<Booking> bookings = new ArrayList<Booking>();
 
@@ -150,14 +171,20 @@ public class DataLoader {
                     String createdAt = parts[3];
                     String bookingStatus = parts[4];
 
+                    // Booking constructor requires a user and event object, 
+                    // so we need to find them by their IDs
                     User matchedUser = findUserById(users, userId);
                     Event matchedEvent = findEventById(events, eventId);
 
                     if (matchedUser != null && matchedEvent != null) {
+                        // there is a chance that the string is invalid, 
+                        // so we create an OPTIMISTIC CONFIRMED booking
+                        // then we actually check the status from the CSV file
                         BookingStatus status = BookingStatus.CONFIRMED;
                         try {
                             status = BookingStatus.valueOf(bookingStatus);
                         } catch (Exception statusEx) {
+                            // in case mistamatched string
                         }
 
                         Booking booking = new Booking(
@@ -185,25 +212,37 @@ public class DataLoader {
         return bookings;
     }
 
+    // Rebuilds waitlist sequence after loading.
+    // For each event:
+    // - confirmed bookings stay before waitlisted bookings
+    // - waitlisted bookings are ordered by createdAt (oldest first)
+    // This keeps waitlist promotion fair and consistent after restart.
     private void restoreWaitlistOrder(ArrayList<Booking> bookings) {
+        // this comparator rule is to make sure we are comapring the same event
+        // and that if both are waitlisted, the earliest createdAt gets priority
     Collections.sort(bookings, new Comparator<Booking>() {
         public int compare(Booking first, Booking second) {
 
+            // make sure we are comparing the same event
             if (!first.event.eventId.equals(second.event.eventId)) {
                 return 0;
             }
 
+            // check if the bookings are waitlisted
             boolean firstWaitlisted = first.status == BookingStatus.WAITLISTED;
             boolean secondWaitlisted = second.status == BookingStatus.WAITLISTED;
 
+            // if both are waitlisted, compare the createdAt
             if (firstWaitlisted && secondWaitlisted) {
                 return first.createdAt.compareTo(second.createdAt);
             }
 
+            // if the first is waitlisted and the second is not, return 1
             if (firstWaitlisted && !secondWaitlisted) {
                 return 1;
             }
 
+            // if the first is not waitlisted and the second is, return -1
             if (!firstWaitlisted && secondWaitlisted) {
                 return -1;
             }
@@ -213,6 +252,7 @@ public class DataLoader {
     });
 }
 
+    // Utility: locate a user object from loaded users by ID.
     private User findUserById(ArrayList<User> users, String userId) {
         for (int i = 0; i < users.size(); i++) {
             if (users.get(i).userId.equals(userId)) {
@@ -222,6 +262,7 @@ public class DataLoader {
         return null;
     }
 
+    // Utility: locate an event object from loaded events by ID.
     private Event findEventById(ArrayList<Event> events, String eventId) {
         for (int i = 0; i < events.size(); i++) {
             if (events.get(i).eventId.equals(eventId)) {
@@ -231,6 +272,8 @@ public class DataLoader {
         return null;
     }
 
+    // Finds the next numeric booking ID (e.g., BK17 -> next is 18).
+    // Needed to avoid duplicate booking IDs after a restart.
     private int findNextBookingId(ArrayList<Booking> bookings) {
         int maxNumber = 0;
 
