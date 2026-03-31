@@ -141,6 +141,10 @@ public class EventInputForm {
                 // store the event in BookingManager
                 bookingManager.addEvent(newEvent);
 
+                // Save events to file
+                DataSaver saver = new DataSaver();
+                saver.saveEvents(bookingManager.allEvents);
+
                 // show success message
                 resultsArea.setText("Event created successfully:\n\n" + formatEvent(newEvent));
 

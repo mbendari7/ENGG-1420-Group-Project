@@ -39,19 +39,19 @@ public class UserInputForm {
         // Save button
         JButton saveButton = new JButton("Save");
         panel.add(new JLabel(""));
-        panel.add(saveButton);
+        panel.add(saveButton); //this adds the save button to the panel
 
         // What happens when save is clicked
         saveButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String id = idField.getText();
-                String name = nameField.getText();
-                String email = emailField.getText();
-                String userType = typeBox.getSelectedItem().toString();
+                String id = idField.getText(); //this gets the id from the text field
+                String name = nameField.getText(); //this gets the name from the text field
+                String email = emailField.getText(); //this gets the email from the text field
+                String userType = typeBox.getSelectedItem().toString(); //this gets the user type from the dropdown
 
                 // Basic check for empty fields
                 if (id.trim().equals("") || name.trim().equals("") || email.trim().equals("")) {
-                    JOptionPane.showMessageDialog(frame, "Please fill all fields.");
+                    JOptionPane.showMessageDialog(frame, "Please fill all fields."); 
                     return;
                 }
 
@@ -68,11 +68,11 @@ public class UserInputForm {
                 // Add user to global list
                 Main.allUsers.add(newUser);
 
-                // Save users, events, and bookings to file
+                // Save users to file
                 DataSaver saver = new DataSaver();
-                saver.saveSystemState(Main.allUsers, Main.bookingManager.allEvents, Main.bookingManager.allBookings);
+                saver.saveUsers(Main.allUsers); //this saves the users to the file
 
-                JOptionPane.showMessageDialog(frame, "User saved.");
+                JOptionPane.showMessageDialog(frame, "User saved."); //this is a popup window that appears when the user is saved
                 frame.dispose();
             }
         });

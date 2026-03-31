@@ -21,35 +21,46 @@ public class DataLoader {
         ArrayList<User> users = new ArrayList<User>();
 
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("saved_users.csv"));
-            String line = reader.readLine();
+            BufferedReader reader = new BufferedReader(new FileReader("users.csv"));
+            String line = reader.readLine(); // header
 
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-
-                String userId = parts[0];
-                String name = parts[1];
-                String email = parts[2];
-                String userType = parts[3];
-
-                User user = null;
-
-                if (userType.equals("Student")) {
-                    user = new Student(userId, name, email);
-                } else if (userType.equals("Staff")) {
-                    user = new Staff(userId, name, email);
-                } else if (userType.equals("Guest")) {
-                    user = new Guest(userId, name, email);
+                if (line.trim().equals("")) {
+                    continue;
                 }
 
-                if (user != null) {
-                    users.add(user);
+                try {
+                    String[] parts = line.split(",", -1);
+                    if (parts.length < 4) {
+                        continue;
+                    }
+
+                    String userId = parts[0];
+                    String name = parts[1];
+                    String email = parts[2];
+                    String userType = parts[3];
+
+                    User user = null;
+
+                    if (userType.equals("Student")) {
+                        user = new Student(userId, name, email);
+                    } else if (userType.equals("Staff")) {
+                        user = new Staff(userId, name, email);
+                    } else if (userType.equals("Guest")) {
+                        user = new Guest(userId, name, email);
+                    }
+
+                    if (user != null) {
+                        users.add(user);
+                    }
+                } catch (Exception rowEx) {
+                    // Skip malformed rows instead of failing entire load
                 }
             }
 
             reader.close();
         } catch (Exception e) {
-            System.out.println("Error loading users from saved_users.csv.");
+            System.out.println("Error loading users from users.csv.");
         }
 
         return users;
@@ -59,42 +70,57 @@ public class DataLoader {
         ArrayList<Event> events = new ArrayList<Event>();
 
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("saved_events.csv"));
-            String line = reader.readLine();
+            BufferedReader reader = new BufferedReader(new FileReader("events.csv"));
+            String line = reader.readLine(); // header
 
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",", -1);
-
-                String eventId = parts[0];
-                String title = parts[1];
-                String dateTime = parts[2];
-                String location = parts[3];
-                int capacity = Integer.parseInt(parts[4]);
-                String statusText = parts[5];
-                String eventType = parts[6];
-                String topic = parts[7];
-                String speakerName = parts[8];
-                String ageRestriction = parts[9];
-
-                Event event = null;
-
-                if (eventType.equals("Workshop")) {
-                    event = new Workshop(eventId, title, dateTime, location, capacity, topic);
-                } else if (eventType.equals("Seminar")) {
-                    event = new Seminar(eventId, title, dateTime, location, capacity, speakerName);
-                } else if (eventType.equals("Concert")) {
-                    event = new Concert(eventId, title, dateTime, location, capacity, ageRestriction);
+                if (line.trim().equals("")) {
+                    continue;
                 }
 
-                if (event != null) {
-                    event.status = EventStatus.valueOf(statusText);
-                    events.add(event);
+                try {
+                    String[] parts = line.split(",", -1);
+                    if (parts.length < 10) {
+                        continue;
+                    }
+
+                    String eventId = parts[0];
+                    String title = parts[1];
+                    String dateTime = parts[2];
+                    String location = parts[3];
+                    int capacity = Integer.parseInt(parts[4]);
+                    String statusText = parts[5];
+                    String eventType = parts[6];
+                    String topic = parts[7];
+                    String speakerName = parts[8];
+                    String ageRestriction = parts[9];
+
+                    Event event = null;
+
+                    if (eventType.equals("Workshop")) {
+                        event = new Workshop(eventId, title, dateTime, location, capacity, topic);
+                    } else if (eventType.equals("Seminar")) {
+                        event = new Seminar(eventId, title, dateTime, location, capacity, speakerName);
+                    } else if (eventType.equals("Concert")) {
+                        event = new Concert(eventId, title, dateTime, location, capacity, ageRestriction);
+                    }
+
+                    if (event != null) {
+                        try {
+                            event.status = EventStatus.valueOf(statusText);
+                        } catch (Exception statusEx) {
+                            // Keep default status if invalid
+                        }
+                        events.add(event);
+                    }
+                } catch (Exception rowEx) {
+                    // Skip malformed rows instead of failing entire load
                 }
             }
 
             reader.close();
         } catch (Exception e) {
-            System.out.println("Error loading events from saved_events.csv.");
+            System.out.println("Error loading events from events.csv.");
         }
 
         return events;
@@ -104,37 +130,54 @@ public class DataLoader {
         ArrayList<Booking> bookings = new ArrayList<Booking>();
 
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("saved_bookings.csv"));
-            String line = reader.readLine();
+            BufferedReader reader = new BufferedReader(new FileReader("bookings.csv"));
+            String line = reader.readLine(); // header
 
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",", -1);
+                if (line.trim().equals("")) {
+                    continue;
+                }
 
-                String bookingId = parts[0];
-                String userId = parts[1];
-                String eventId = parts[2];
-                String createdAt = parts[3];
-                String bookingStatus = parts[4];
+                try {
+                    String[] parts = line.split(",", -1);
+                    if (parts.length < 5) {
+                        continue;
+                    }
 
-                User matchedUser = findUserById(users, userId);
-                Event matchedEvent = findEventById(events, eventId);
+                    String bookingId = parts[0];
+                    String userId = parts[1];
+                    String eventId = parts[2];
+                    String createdAt = parts[3];
+                    String bookingStatus = parts[4];
 
-                if (matchedUser != null && matchedEvent != null) {
-                    Booking booking = new Booking(
-                            bookingId,
-                            matchedUser,
-                            matchedEvent,
-                            createdAt,
-                            BookingStatus.valueOf(bookingStatus)
-                    );
+                    User matchedUser = findUserById(users, userId);
+                    Event matchedEvent = findEventById(events, eventId);
 
-                    bookings.add(booking);
+                    if (matchedUser != null && matchedEvent != null) {
+                        BookingStatus status = BookingStatus.CONFIRMED;
+                        try {
+                            status = BookingStatus.valueOf(bookingStatus);
+                        } catch (Exception statusEx) {
+                        }
+
+                        Booking booking = new Booking(
+                                bookingId,
+                                matchedUser,
+                                matchedEvent,
+                                createdAt,
+                                status
+                        );
+
+                        bookings.add(booking);
+                    }
+                } catch (Exception rowEx) {
+                    // Skip malformed rows instead of failing entire load
                 }
             }
 
             reader.close();
         } catch (Exception e) {
-            System.out.println("Error loading bookings from saved_bookings.csv.");
+            System.out.println("Error loading bookings from bookings.csv.");
         }
 
         restoreWaitlistOrder(bookings);

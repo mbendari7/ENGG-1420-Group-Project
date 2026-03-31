@@ -27,7 +27,14 @@ public class Main {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
                 DataSaver saver = new DataSaver(); // save the system state before exiting
-                saver.saveSystemState(allUsers, bookingManager.allEvents, bookingManager.allBookings);
+                // Avoid wiping events/bookings if they failed to load (empty lists)
+                saver.saveUsers(allUsers);
+                if (bookingManager.allEvents != null && bookingManager.allEvents.size() > 0) {
+                    saver.saveEvents(bookingManager.allEvents);
+                }
+                if (bookingManager.allBookings != null && bookingManager.allBookings.size() > 0) {
+                    saver.saveBookings(bookingManager.allBookings);
+                }
                 System.exit(0);
             }
         });
