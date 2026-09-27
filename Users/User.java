@@ -13,4 +13,8 @@ public abstract class User {
     public abstract String getUserType();
 
     public abstract int getMaxBookings();
+
+    public Object getUserId() {
+        return null;
+    }
 }

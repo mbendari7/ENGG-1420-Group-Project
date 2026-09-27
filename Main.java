@@ -3,14 +3,12 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Main {
-    public static ArrayList<User> users = new ArrayList<>();
-    public static ArrayList<Event> events = new ArrayList<>();
-    public static ArrayList<Booking> bookings = new ArrayList<>();
-    public static BookingManager bookingManager;
+    public static ArrayList<User> allUsers = new ArrayList<>();
+    public static BookingManager bookingManager = new BookingManager();
 
     public static void main(String[] args) {
         DataLoader loader = new DataLoader();
-        SystemState state = loader.loadSystemState();
+        SystemState loadedState = loader.loadSystemState();
 
         if (loadedState != null) {
             allUsers = loadedState.allUsers;
@@ -19,19 +17,18 @@ public class Main {
             bookingManager.nextBookingId = loadedState.nextBookingId;
         }
 
-        JFrame mainFrame = new JFrame("Campus Event Booking System - Phase 1");
-        // intercept the close button to run DataSaver before exiting, basically an
-        // autosave feature
+        JFrame mainFrame = new JFrame("Campus Event Booking System");
         mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         mainFrame.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                DataSaver saver = new DataSaver(); // save the system state before exiting
+                DataSaver saver = new DataSaver();
                 saver.saveSystemState(allUsers, bookingManager.allEvents, bookingManager.allBookings);
                 System.exit(0);
             }
         });
-        mainFrame.setSize(400, 350);
+
+        mainFrame.setSize(400, 450);
         mainFrame.setLayout(new GridLayout(5, 1, 10, 10));
 
         JLabel titleLabel = new JLabel("Main Navigation Menu", SwingConstants.CENTER);
@@ -47,14 +44,15 @@ public class Main {
         mainFrame.add(eventMenuBtn);
 
         JButton bookingMenuBtn = new JButton("3. Booking Management");
-        bookingMenuBtn.addActionListener(e -> new BookingForm()); // Links to your BookingForm!
-        mainFrame.add(bookingMenuBtn);
+        bookingMenuBtn.addActionListener(e -> new BookingForm());
 
         JButton waitlistMenuBtn = new JButton("4. Waitlist Management");
-        waitlistMenuBtn.addActionListener(e -> new WaitlistForm()); // Links to the new WaitlistForm!
+        waitlistMenuBtn.addActionListener(e -> new WaitlistForm());
+
+        mainFrame.add(bookingMenuBtn);
         mainFrame.add(waitlistMenuBtn);
 
-        mainFrame.setLocationRelativeTo(null); // Centers the window on your screen
+        mainFrame.setLocationRelativeTo(null);
         mainFrame.setVisible(true);
     }
 }
